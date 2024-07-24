@@ -27,14 +27,16 @@ func repl() {
 			}
 		case "map":
 			getMap(mapPage)
-			mapPage = 1
+			mapPage++
 
 		case "mapb":
-			getMap(mapPage)
 			mapPage--
+			getMap(mapPage)
+
 		default:
 			fmt.Println("HUH?")
 		}
+		
 		fmt.Println("Type in a command or type help or exit to quit")
 	}
 }
@@ -47,10 +49,12 @@ func cleanInput(str string) []string {
 func getMap(mapPage int) {
 	numlocations := 20
 	fmt.Println("page", 1+(mapPage*numlocations))
-	for i := 1; i < numlocations+1; i++ {
-		location := mapgetter(i + (mapPage * numlocations))
-		fmt.Println(location.ID, ": ", location.Name)
+	go func() {
+		for i := 1; i < numlocations+1; i++ {
+			location := mapgetter(i + (mapPage * numlocations))
+			fmt.Println(location.ID, ": ", location.Name)
 
-	}
+		}
+	}()
 
 }
