@@ -37,7 +37,7 @@ func repl() {
 			fmt.Println("HUH?")
 		}
 		
-		fmt.Println("Type in a command or type help or exit to quit")
+git		fmt.Println("Type in a command or type help or exit to quit")
 	}
 }
 
