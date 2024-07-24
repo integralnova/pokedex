@@ -4,13 +4,13 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 )
 
 func repl() {
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Println("Welcome To The Pokedex!\nType help or exit to quit")
+	mapPage := 0
 
 	for {
 		scanner.Scan()
@@ -26,25 +26,16 @@ func repl() {
 				fmt.Println(command.name, ":", command.description)
 			}
 		case "map":
-
-			if len(input) > 1 {
-				num, notNum := strconv.Atoi(input[1])
-				if notNum != nil || num == 1 {
-					fmt.Println("Interesting... heres 10...")
-					fmt.Println(mapgetter(10)[1])
-				} else {
-					fmt.Println(mapgetter(num)[1])
-				}
-			} else {
-				fmt.Println(mapgetter(10)[1])
-			}
+			getMap(mapPage)
+			mapPage = 1
 
 		case "mapb":
-			fmt.Println(mapgetter(10))
+			getMap(mapPage)
+			mapPage--
 		default:
 			fmt.Println("HUH?")
 		}
-
+		fmt.Println("Type in a command or type help or exit to quit")
 	}
 }
 
@@ -52,4 +43,14 @@ func cleanInput(str string) []string {
 	lowered := strings.ToLower(str)
 	words := strings.Fields(lowered)
 	return words
+}
+func getMap(mapPage int) {
+	numlocations := 20
+	fmt.Println("page", 1+(mapPage*numlocations))
+	for i := 1; i < numlocations+1; i++ {
+		location := mapgetter(i + (mapPage * numlocations))
+		fmt.Println(location.ID, ": ", location.Name)
+
+	}
+
 }
