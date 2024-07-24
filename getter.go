@@ -8,14 +8,14 @@ import (
 	"net/http"
 )
 
-func getter(add int) string {
+func locationFormatter(add int) string {
 	return fmt.Sprint("https://pokeapi.co/api/v2/location/", add)
 }
 
-func caller(s int) Locationstruct {
-	call := getter(s)
+func getLocation(numLocations int) Locationstruct {
+	url := locationFormatter(numLocations)
 
-	res, err := http.Get(call)
+	res, err := http.Get(url)
 	if err != nil {
 		log.Print(err)
 	}
@@ -34,14 +34,15 @@ func caller(s int) Locationstruct {
 	return result
 }
 
-func mapgetter(numlocations int) (response Locationstruct) {
+func maplocationFormatter(numlocations int) (response Locationstruct) {
 
-	response = caller(numlocations)
+	response = getLocation(numlocations)
 
 	return response
 
 }
 
+// Holds response from https://pokeapi.co/api/v2/location/
 type Locationstruct struct {
 	Areas []struct {
 		Name string `json:"name"`

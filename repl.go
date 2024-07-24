@@ -51,7 +51,7 @@ func getMap(mapPage int) {
 	fmt.Println("page", 1+(mapPage*numlocations))
 	go func() {
 		for i := 1; i < numlocations+1; i++ {
-			location := mapgetter(i + (mapPage * numlocations))
+			location := getLocation(i + (mapPage * numlocations))
 			fmt.Println(location.ID, ": ", location.Name)
 
 		}
