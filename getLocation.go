@@ -19,7 +19,6 @@ func getPage() int {
 	return page
 }
 func nextPage() {
-	getMap()
 	setPage(getPage() + 1)
 }
 
@@ -33,10 +32,10 @@ func previousPage() {
 		setPage(getPage() - 1)
 		fmt.Println("page reduced to ", getPage())
 	}
-	getMap()
 }
 
 func getMap() {
+	fmt.Println("PAGE: ", getPage())
 	var wg sync.WaitGroup
 	wg.Add(20)
 

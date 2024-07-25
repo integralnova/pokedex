@@ -30,7 +30,9 @@ func repl() {
 				fmt.Println(command.name, ":", command.description)
 			}
 		case "map":
+			getMap()
 		loop:
+
 			for {
 				fmt.Println("Enter : NEXT| BACK| EXIT")
 				input := scanNext(*scanner)
@@ -38,8 +40,10 @@ func repl() {
 				switch text {
 				case "next":
 					nextPage()
+					getMap()
 				case "back":
 					previousPage()
+					getMap()
 				case "exit":
 					fmt.Println("Exiting map")
 					break loop
