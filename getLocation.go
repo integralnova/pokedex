@@ -6,13 +6,68 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"sync"
 )
+
+var page int = 0
+
+func setPage(pageset int) {
+	page = pageset
+}
+
+func getPage() int {
+	return page
+}
+func nextPage() {
+	getMap()
+	setPage(getPage() + 1)
+}
+
+func previousPage() {
+	if getPage() == 0 {
+		fmt.Println("No more pages")
+		setPage(0)
+		return
+	}
+	if getPage() > 0 {
+		setPage(getPage() - 1)
+		fmt.Println("page reduced to ", getPage())
+	}
+	getMap()
+}
+
+func getMap() {
+	var wg sync.WaitGroup
+	wg.Add(20)
+
+	go func() {
+
+		for i := 1; i < 21; i++ {
+			defer wg.Done()
+			var numlocations = (page * 20) + i
+
+			location, ok := getLocation(numlocations)
+
+			if ok {
+				fmt.Println(location.ID, ": ", location.Name)
+			}
+			if !ok {
+				fmt.Println(numlocations, " : NOt valid ID")
+			}
+
+		}
+
+	}()
+	wg.Wait()
+
+}
 
 func locationFormatter(add int) string {
 	return fmt.Sprint("https://pokeapi.co/api/v2/location/", add)
 }
 
-func getLocation(numLocations int) Locationstruct {
+func getLocation(numLocations int) (Locationstruct, bool) {
+	var result Locationstruct
 	url := locationFormatter(numLocations)
 
 	res, err := http.Get(url)
@@ -22,24 +77,16 @@ func getLocation(numLocations int) Locationstruct {
 	body, err := io.ReadAll(res.Body)
 	res.Body.Close()
 	if res.StatusCode > 299 {
-		log.Printf("Response failed with status code: %d and\nbody: %s\n", res.StatusCode, body)
+		return result, false
 	}
 	if err != nil {
 		log.Print(err)
 	}
-	var result Locationstruct
+
 	if err := json.Unmarshal(body, &result); err != nil {
 		print(err)
 	}
-	return result
-}
-
-func maplocationFormatter(numlocations int) (response Locationstruct) {
-
-	response = getLocation(numlocations)
-
-	return response
-
+	return result, true
 }
 
 // Holds response from https://pokeapi.co/api/v2/location/

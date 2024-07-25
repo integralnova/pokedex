@@ -7,14 +7,18 @@ import (
 	"strings"
 )
 
+func scanNext(scanner bufio.Scanner) []string {
+	scanner.Scan()
+	return cleanInput(scanner.Text())
+}
+
 func repl() {
 	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Println("Welcome To The Pokedex!\nType help or exit to quit")
-	mapPage := 0
+	fmt.Println("Welcome To The Pokedex!")
 
 	for {
-		scanner.Scan()
-		input := cleanInput(scanner.Text())
+		fmt.Println("Type in a command or type help or exit to quit")
+		input := scanNext(*scanner)
 		text := input[0]
 
 		switch text {
@@ -26,18 +30,28 @@ func repl() {
 				fmt.Println(command.name, ":", command.description)
 			}
 		case "map":
-			getMap(mapPage)
-			mapPage++
-
-		case "mapb":
-			mapPage--
-			getMap(mapPage)
+		loop:
+			for {
+				fmt.Println("Enter : NEXT| BACK| EXIT")
+				input := scanNext(*scanner)
+				text := input[0]
+				switch text {
+				case "next":
+					nextPage()
+				case "back":
+					previousPage()
+				case "exit":
+					fmt.Println("Exiting map")
+					break loop
+				default:
+					fmt.Println("HUH?")
+				}
+			}
 
 		default:
 			fmt.Println("HUH?")
 		}
 
-		fmt.Println("Type in a command or type help or exit to quit")
 	}
 }
 
@@ -45,16 +59,4 @@ func cleanInput(str string) []string {
 	lowered := strings.ToLower(str)
 	words := strings.Fields(lowered)
 	return words
-}
-func getMap(mapPage int) {
-	numlocations := 20
-	fmt.Println("page", 1+(mapPage*numlocations))
-	go func() {
-		for i := 1; i < numlocations+1; i++ {
-			location := getLocation(i + (mapPage * numlocations))
-			fmt.Println(location.ID, ": ", location.Name)
-
-		}
-	}()
-
 }

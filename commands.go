@@ -19,8 +19,4 @@ var commands = map[string]command{
 		name:        "map",
 		description: "Displays the names of 20 location areas in the Pokemon world",
 	},
-	"mapb": {
-		name:        "mapb",
-		description: "Displays the previous 20 locations",
-	},
 }
